@@ -12885,7 +12885,8 @@ AdaBoost classifier is the clear winner looking at the accuracy and F-scores whe
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong> 
-AdaBoost fits a series of weak or inaccurate classifiers to the given data. The classifiers are "weak" in the sense that they are slightly better than random guess. In this case we used a decision tree of depth 1 as the "weak classifier". The AdaBoost algorthm starts with a uniform set of weights at each training point and runs for a set number of iterations. At each iteration it checks how the training data is being classified and assigns more weight to mis-classified samples so that they receive more focus in next iteration. A new "weak classifier" is learned at each step from the reweighted data. So by the end of T iterations we have a series of T classifiers each capturing a different aspect of the data. To generate predictions, each of these classifiers produces its own prediction and they are combined through a weighted majority vote.  <br>
+AdaBoost fits a series of weak or inaccurate classifiers to the given data. The classifiers are "weak" in the sense that they are slightly better than random guess. In this case we used a decision tree of depth 1 as the "weak classifier". A decision tree has a set of nodes at which a decision is made based on a specific feature of the data. This leads to a split of data in to two or more subsets which can be further divided into more subsets by making decisons on other fetures of the data. The final set of nodes or leaves represent the final outcome of the process and the path to the leaf nodes from the root node explains the outcome and how the features determine the outcome. So depending on the number of features in dataset, decision trees can be very complex with many levels. In this case we are using a decison tree of depth 1 called a decision stump as our weak classifier. The stump basically defines a rule based on one specific attribute of the data to classify it. We use this as our base or weak classifier. Since we have several features in the data, to mke robust predictions, we use AdaBoost to learn several such decisio stumps from the data that capture its different aspects such as age, occupation etc .  <br>
+The AdaBoost algorthm starts with a uniform set of weights at each training point and runs for a set number of iterations. At each iteration it checks how the training data is being classified and assigns more weight to mis-classified samples so that they receive more focus or "boost" in next iteration. A new decision stump is learned at each step from the reweighted data. So by the end of T iterations we have a series of T decision stumps each capturing a different feature of the data. To generate predictions, each of these classifiers produces its own prediction and they are combined through a weighted majority vote.  <br>
 Reference: <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html"><code>sklearn.ensemble.AdaBoostClassifer</code></a></p>
 
 </div>
@@ -12918,7 +12919,7 @@ Reference: <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ens
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Import &#39;GridSearchCV&#39;, &#39;make_scorer&#39;, and any other necessary libraries</span>
@@ -12926,8 +12927,7 @@ Reference: <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ens
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">make_scorer</span>
 
 <span class="c1"># TODO: Initialize the classifier</span>
-<span class="n">clf</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">(</span><span class="n">base_estimator</span><span class="o">=</span><span class="n">DecisionTreeClassifier</span><span class="p">())</span>
-
+<span class="n">clf</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">(</span><span class="n">base_estimator</span><span class="o">=</span><span class="n">DecisionTreeClassifier</span><span class="p">(),</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">45</span><span class="p">)</span>
 
 <span class="c1"># TODO: Create the parameters list you wish to tune, using a dictionary if needed.</span>
 <span class="c1"># HINT: parameters = {&#39;parameter_1&#39;: [value1, value2], &#39;parameter_2&#39;: [value1, value2]}</span>
@@ -12975,23 +12975,11 @@ Reference: <a href="http://scikit-learn.org/stable/modules/generated/sklearn.ens
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/stadepalli/anaconda3/lib/python3.6/site-packages/sklearn/grid_search.py:42: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. This module will be removed in 0.20.
-  DeprecationWarning)
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Unoptimized model
 ------
-Accuracy score on testing data: 0.8371
-F-score on testing data: 0.6692
+Accuracy score on testing data: 0.8335
+F-score on testing data: 0.6598
 
 Optimized Model
 ------
@@ -13035,13 +13023,13 @@ Final F-score on the testing data: 0.7529
 <tr>
 <td style="text-align:center">Accuracy Score</td>
 <td style="text-align:center">0.2478</td>
-<td style="text-align:center">0.84</td>
+<td style="text-align:center">0.83</td>
 <td style="text-align:center">0.87</td>
 </tr>
 <tr>
 <td style="text-align:center">F-score</td>
 <td style="text-align:center">0.2917</td>
-<td style="text-align:center">0.67</td>
+<td style="text-align:center">0.66</td>
 <td style="text-align:center">0.75</td>
 </tr>
 </tbody>
@@ -13176,7 +13164,7 @@ The optimized model performs way better than the naive benchmark predictor and t
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong>
-Features I could not guess are capital-loss, age. Its possible high income individuals could incure loss on their investments (stocks) and report capital-loss (just as they could report capital gains). Age seems reasonable as really young people are unlikely to be in high income groups.</p>
+Features I could not guess are capital-loss, age. Its possible high who incur loss on their investments (property sale, stocks) and report capital-loss are in lower income group. Age seems reasonable as really young people are unlikely to be in high income groups. Peapole are more like to accumulate wealth as they grow older.</p>
 
 </div>
 </div>
@@ -13192,7 +13180,7 @@ Features I could not guess are capital-loss, age. Its possible high income indiv
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import functionality for cloning a model</span>
@@ -13265,7 +13253,7 @@ F-score on testing data: 0.7065
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong> <br>
-The accuracy and F-score are slightly lower with reduced feature set. If training time was a factor, I would certainly consider using the reduced training set for this problem. We could certaunly sacrifice a little bit of accuracy while identifying potential donors.</p>
+The accuracy and F-score are slightly lower with reduced feature set. If training time was a factor, I would certainly consider using the reduced training set for this problem. We could certainly sacrifice a little bit of accuracy while identifying potential donors.</p>
 
 </div>
 </div>
